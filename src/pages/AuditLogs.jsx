@@ -1,4 +1,4 @@
-function AuditLogs({ logs }) {
+function AuditLogs({ logs =[] }) {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">
