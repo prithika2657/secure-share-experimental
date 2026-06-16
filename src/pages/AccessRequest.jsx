@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { collection, getDocs,addDoc } from "firebase/firestore";
 
-function AccessRequest({ documents, requests, setRequests, logs, setLogs }) {
+function AccessRequest({requests, setRequests, logs, setLogs }) {
   const { id } = useParams();
  useEffect(() => {
   const fetchDocument = async() => {
@@ -13,10 +13,19 @@ function AccessRequest({ documents, requests, setRequests, logs, setLogs }) {
       );
 
       const docs = snapshot.docs.map((d) => d.data());
+      console.log("URL ID:", id);
+      console.log("Firestore Docs:", docs);
+      console.log("Looking for ID:", id);
 
-      const found = docs.find(
-        (d) => d.accessLink.includes(id)
-      );
+     docs.forEach((d) => {
+     console.log("Document:", d);
+     });
+
+ const found = docs.find(
+  (d) => d.accessId === id
+);
+
+console.log("Found:", found);
 
       setDoc(found || null);
     } catch (error) {
@@ -32,8 +41,7 @@ function AccessRequest({ documents, requests, setRequests, logs, setLogs }) {
  const [loading, setLoading] = useState(true);
 
  const [sent, setSent] = useState(false);
-
-  const handleRequest = async() => {
+ const handleRequest = async() => {
     const newRequest = {
       id: Date.now(),
       requester: "External User",
