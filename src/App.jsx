@@ -15,6 +15,8 @@ function RouteDebugger() {
   return null;
 }
 export default function App() {
+   console.log("APP LOADED");
+  console.log("HASH:", window.location.hash);
  const [documents, setDocuments] = useState(() => {
   return JSON.parse(localStorage.getItem("documents")) || [];
 });
