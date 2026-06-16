@@ -38,9 +38,14 @@ export default function App() {
   VERSION 2
 </h1>
           <Routes>
-            <Route
+           <Route
   path="/"
-  element={<h1>HOME ROUTE WORKING</h1>}
+  element={
+    <Dashboard
+      documents={documents}
+      requests={requests}
+    />
+  }
 />
 
             <Route
