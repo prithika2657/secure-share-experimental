@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
@@ -19,7 +19,7 @@ export default function App() {
 });
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="flex">
         <Sidebar />
 
@@ -77,6 +77,6 @@ export default function App() {
           </Routes>
         </div>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

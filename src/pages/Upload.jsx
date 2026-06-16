@@ -21,7 +21,7 @@ function Upload({ documents, setDocuments, requests, setRequests,logs,setLogs })
     id: Date.now(),
     name,
     fileName: file.name,
-    accessLink: `https://secure-share-je1hs81ip-prithika2657s-projects.vercel.app/access/${uniqueId}`
+    accessLink: `${window.location.origin}/#/access/${uniqueId}`
   };
 try {
   await addDoc(collection(db, "documents"), newDoc);
