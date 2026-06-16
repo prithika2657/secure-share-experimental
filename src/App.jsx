@@ -39,14 +39,9 @@ export default function App() {
 </h1>
           <Routes>
             <Route
-              path="/"
-              element={
-                <Dashboard
-                  documents={documents}
-                  requests={requests}
-                />
-              }
-            />
+  path="/"
+  element={<h1>HOME ROUTE WORKING</h1>}
+/>
 
             <Route
               path="/upload"
