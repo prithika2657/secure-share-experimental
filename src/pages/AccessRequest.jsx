@@ -33,6 +33,8 @@ function AccessRequest({requests, setRequests, logs, setLogs }) {
 );
 
 console.log("Found:", found);
+console.log("File URL:", found?.fileUrl);
+console.log("Access Mode:", found?.accessMode);
 
       setDoc(found || null);
     } catch (error) {

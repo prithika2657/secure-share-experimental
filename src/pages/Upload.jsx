@@ -6,6 +6,8 @@ function Upload({ documents, setDocuments, requests, setRequests,logs,setLogs })
   const [name, setName] = useState("");
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
+  const [accessMode, setAccessMode] = useState("download");
+  const [expiryHours, setExpiryHours] = useState("");
   const handleUpload = async() => {
   console.log("Before upload:",documents);
 
@@ -13,6 +15,31 @@ function Upload({ documents, setDocuments, requests, setRequests,logs,setLogs })
     console.log("Name or file missing", name, file);
     return;
   }
+  const formData = new FormData();
+
+formData.append("file", file);
+formData.append(
+  "upload_preset",
+  "secureshare_upload"
+);
+
+const cloudinaryResponse = await fetch(
+  "https://api.cloudinary.com/v1_1/dpdr2tgpd/auto/upload",
+  {
+    method: "POST",
+    body: formData,
+  }
+);
+
+const cloudinaryData =
+  await cloudinaryResponse.json();
+
+console.log(
+  "Cloudinary Upload:",
+  cloudinaryData
+);
+
+const fileUrl = cloudinaryData.secure_url;
   const uniqueId = `doc-${Math.random()
   .toString(36)
   .substring(2, 10)}`;
@@ -23,8 +50,14 @@ function Upload({ documents, setDocuments, requests, setRequests,logs,setLogs })
     id: Date.now(),
     name,
     fileName: file.name,
-  accessId: uniqueId,
-  accessLink: accessLink
+    accessId: uniqueId,
+    accessLink: accessLink,
+    accessMode: accessMode,
+    expiryHours:
+    accessMode === "expiry"
+      ? Number(expiryHours)
+      : null,
+    fileUrl: fileUrl
   };
 try {
   await addDoc(collection(db, "documents"), newDoc);
@@ -110,6 +143,44 @@ try {
           className="hidden"
           onChange={(e) => setFile(e.target.files[0])}
   />
+  <div className="mt-4">
+  <label className="block mb-2 font-semibold">
+    Access Mode
+  </label>
+
+  <select
+    value={accessMode}
+    onChange={(e) => setAccessMode(e.target.value)}
+    className="border p-2 rounded w-full"
+  >
+    <option value="download">
+      Download After Approval
+    </option>
+
+    <option value="viewOnly">
+      View Only
+    </option>
+
+    <option value="expiry">
+      Expiry Link
+    </option>
+  </select>
+</div>
+{accessMode === "expiry" && (
+  <div className="mt-4">
+    <label className="block mb-2 font-semibold">
+      Expiry Hours
+    </label>
+
+    <input
+      type="number"
+      placeholder="Enter hours (e.g. 24)"
+      value={expiryHours}
+      onChange={(e) => setExpiryHours(e.target.value)}
+      className="border p-2 rounded w-full"
+    />
+  </div>
+)}
         {file ? file.name : "Click to choose file"}
       </label>
 
