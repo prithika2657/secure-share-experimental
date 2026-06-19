@@ -55,6 +55,7 @@ console.log("Access Mode:", found?.accessMode);
       id: Date.now(),
       requester: "External User",
       document: doc?.name,
+      accessId: doc?.accessId,
       purpose: "Access via Link",
       status: "Pending",
     };
