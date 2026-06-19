@@ -1,4 +1,5 @@
 //TEST123
+import Login from "./pages/Login";
 import { useState } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -8,6 +9,7 @@ import Upload from "./pages/Upload";
 import Requests from "./pages/Requests";
 import AuditLogs from "./pages/AuditLogs";
 import AccessRequest from "./pages/AccessRequest.jsx";
+import Signup from "./pages/Signup";
 function RouteDebugger() {
   const location = useLocation();
 
@@ -37,6 +39,14 @@ export default function App() {
         <div className="flex-1">
           
           <Routes>
+             <Route
+  path="/signup"
+  element={<Signup />}
+/>
+<Route
+  path="/login"
+  element={<Login />}
+/>
            <Route
   path="/"
   element={

@@ -70,6 +70,7 @@ setApproved(!!approvedRequest);
       requester: "External User",
       document: doc?.name,
       accessId: doc?.accessId,
+      documentOwnerId: doc?.ownerId,
       purpose: "Access via Link",
       status: "Pending",
     };

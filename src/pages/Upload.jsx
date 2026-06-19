@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
-
+import { auth } from "../firebase";
 function Upload({ documents, setDocuments, requests, setRequests,logs,setLogs }) {
   const [name, setName] = useState("");
   const [file, setFile] = useState(null);
@@ -57,7 +57,10 @@ const fileUrl = cloudinaryData.secure_url;
     accessMode === "expiry"
       ? Number(expiryHours)
       : null,
-    fileUrl: fileUrl
+    fileUrl: fileUrl,
+
+  ownerId: auth.currentUser.uid,
+  ownerEmail: auth.currentUser.email,
   };
 try {
   await addDoc(collection(db, "documents"), newDoc);
