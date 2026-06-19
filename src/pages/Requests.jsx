@@ -5,6 +5,7 @@ import {
   updateDoc,
   doc as firestoreDoc,
 } from "firebase/firestore";
+import { auth } from "../firebase";
 function Requests({ requests, setRequests, logs, setLogs }) {
   const updateStatus = async(id, newStatus) => {
     // Update requests and save to localStorage
@@ -73,7 +74,10 @@ function Requests({ requests, setRequests, logs, setLogs }) {
       return updatedLogs;
     });
   };
-
+const filteredRequests = requests.filter(
+  (request) =>
+    request.documentOwnerId === auth.currentUser?.uid
+);
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">
@@ -81,12 +85,12 @@ function Requests({ requests, setRequests, logs, setLogs }) {
       </h1>
 
       <div className="space-y-4">
-        {requests.length === 0 ? (
+        {filteredRequests.length === 0 ? (
           <div className="bg-white p-6 rounded-xl shadow">
             No requests available
           </div>
         ) : (
-          requests.map((request) => (
+          filteredRequests.map((request) => (
             <div
               key={request.id}
               className="bg-white p-6 rounded-xl shadow"
