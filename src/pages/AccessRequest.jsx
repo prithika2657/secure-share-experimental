@@ -37,6 +37,18 @@ console.log("File URL:", found?.fileUrl);
 console.log("Access Mode:", found?.accessMode);
 
       setDoc(found || null);
+      const requestSnapshot = await getDocs(
+  collection(db, "requests")
+);
+
+const approvedRequest =
+  requestSnapshot.docs.find(
+    (r) =>
+      r.data().accessId === found?.accessId &&
+      r.data().status === "Approved"
+  );
+
+setApproved(!!approvedRequest);
     } catch (error) {
       console.error(error);
     }
@@ -50,8 +62,10 @@ console.log("Access Mode:", found?.accessMode);
  const [loading, setLoading] = useState(true);
 
  const [sent, setSent] = useState(false);
+ const [approved, setApproved] = useState(false);
  const handleRequest = async() => {
-    const newRequest = {
+  console.log("Current document:", doc); 
+  const newRequest = {
       id: Date.now(),
       requester: "External User",
       document: doc?.name,
@@ -105,18 +119,27 @@ console.log("Access Mode:", found?.accessMode);
         <p><b>Document:</b> {doc.name}</p>
         <p><b>File:</b> {doc.fileName}</p>
 
-        {!sent ? (
-          <button
-            onClick={handleRequest}
-            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Request Access
-          </button>
-        ) : (
-          <p className="text-green-600 mt-4">
-            Request Sent ✔
-          </p>
-        )}
+        {approved ? (
+  <a
+    href={doc.fileUrl}
+    target="_blank"
+    rel="noreferrer"
+    className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded"
+  >
+    Download Document
+  </a>
+) : !sent ? (
+  <button
+    onClick={handleRequest}
+    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+  >
+    Request Access
+  </button>
+) : (
+  <p className="text-green-600 mt-4">
+    Request Sent ✔
+  </p>
+)}
       </div>
     </div>
   );

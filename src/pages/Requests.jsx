@@ -1,6 +1,41 @@
+import { db } from "../firebase";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc as firestoreDoc,
+} from "firebase/firestore";
 function Requests({ requests, setRequests, logs, setLogs }) {
-  const updateStatus = (id, newStatus) => {
+  const updateStatus = async(id, newStatus) => {
     // Update requests and save to localStorage
+    try {
+  const snapshot = await getDocs(
+    collection(db, "requests")
+  );
+
+  const firestoreRequest = snapshot.docs.find(
+    (d) => d.data().id === id
+  );
+
+  if (firestoreRequest) {
+    await updateDoc(
+      firestoreDoc(
+        db,
+        "requests",
+        firestoreRequest.id
+      ),
+      {
+        status: newStatus,
+      }
+    );
+
+    console.log(
+      "Firestore request updated!"
+    );
+  }
+} catch (error) {
+  console.error(error);
+}
     setRequests((prev) => {
       const updated = prev.map((req) =>
         req.id === id
