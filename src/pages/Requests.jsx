@@ -53,7 +53,16 @@ useEffect(() => {
         status: newStatus,
       }
     );
+const refreshedSnapshot = await getDocs(
+  collection(db, "requests")
+);
 
+const refreshedRequests =
+  refreshedSnapshot.docs.map((doc) =>
+    doc.data()
+  );
+
+setFirestoreRequests(refreshedRequests);
     console.log(
       "Firestore request updated!"
     );
