@@ -10,6 +10,8 @@ import Requests from "./pages/Requests";
 import AuditLogs from "./pages/AuditLogs";
 import AccessRequest from "./pages/AccessRequest.jsx";
 import Signup from "./pages/Signup";
+import { Navigate } from "react-router-dom";
+import { auth } from "./firebase";
 function RouteDebugger() {
   const location = useLocation();
 
@@ -57,31 +59,39 @@ export default function App() {
   }
 />
 
-            <Route
-              path="/upload"
-              element={
-                <Upload
-                   documents={documents}
-                   setDocuments={setDocuments}
-                   requests={requests}
-                   setRequests={setRequests}
-                   logs={logs}
-                   setLogs={setLogs}
-                />
-              }
-            />
+           <Route
+  path="/upload"
+  element={
+    auth.currentUser ? (
+      <Upload
+        documents={documents}
+        setDocuments={setDocuments}
+        requests={requests}
+        setRequests={setRequests}
+        logs={logs}
+        setLogs={setLogs}
+      />
+    ) : (
+      <Navigate to="/login" />
+    )
+  }
+/>
 
             <Route
-              path="/requests"
-              element={
-                <Requests
-                  requests={requests}
-                  setRequests={setRequests}
-                  logs={logs}
-                  setLogs={setLogs}
-                />
-              }
-            />
+  path="/requests"
+  element={
+    auth.currentUser ? (
+      <Requests
+        requests={requests}
+        setRequests={setRequests}
+        logs={logs}
+        setLogs={setLogs}
+      />
+    ) : (
+      <Navigate to="/login" />
+    )
+  }
+/>
             <Route
               path="/access/:id"
               element={
@@ -95,7 +105,16 @@ export default function App() {
   }
 />
 
-            <Route path="/logs" element={<AuditLogs logs ={logs}/>} />
+            <Route
+  path="/logs"
+  element={
+    auth.currentUser ? (
+      <AuditLogs logs={logs} />
+    ) : (
+      <Navigate to="/login" />
+    )
+  }
+/>
           </Routes>
         </div>
       </div>
