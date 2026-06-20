@@ -66,6 +66,15 @@ function Signup() {
             {message}
           </p>
         )}
+        <p className="mt-4">
+  Already have an account?{" "}
+  <a
+    href="#/login"
+    className="text-blue-600"
+  >
+    Login
+  </a>
+</p>
       </div>
     </div>
   );

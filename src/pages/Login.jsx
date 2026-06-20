@@ -22,7 +22,7 @@ function Login() {
   console.log("UID:", auth.currentUser.uid);
 console.log("EMAIL:", auth.currentUser.email);
       setMessage("Login successful ✅");
-      navigate(from, { replace: true });
+      navigate("/");
     } catch (error) {
       setMessage(error.message);
     }
@@ -59,16 +59,26 @@ const from =
           className="border p-2 w-full mb-3"
         />
 
-        <button
-          onClick={handleLogin}
-          className="bg-green-600 text-white px-4 py-2 rounded"
-        >
-          Login
-        </button>
+       <button
+  onClick={handleLogin}
+  className="bg-green-600 text-white px-4 py-2 rounded"
+>
+  Login
+</button>
 
-        {message && (
-          <p className="mt-3">{message}</p>
-        )}
+{message && (
+  <p className="mt-3">{message}</p>
+)}
+
+<p className="mt-4">
+  Don't have an account?{" "}
+  <a
+    href="#/signup"
+    className="text-blue-600"
+  >
+    Sign Up
+  </a>
+</p>
       </div>
     </div>
   );

@@ -75,10 +75,12 @@ export default function App() {
  <Route
   path="/"
   element={
+    <ProtectedRoute>
     <Dashboard
       documents={documents}
       requests={requests}
     />
+    </ProtectedRoute>
   }
 />
 
