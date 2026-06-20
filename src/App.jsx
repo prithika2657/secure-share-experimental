@@ -1,8 +1,13 @@
 //TEST123
 import Login from "./pages/Login";
 import { useState } from "react";
-import { HashRouter, Routes, Route } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import {
+  HashRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
@@ -10,9 +15,8 @@ import Requests from "./pages/Requests";
 import AuditLogs from "./pages/AuditLogs";
 import AccessRequest from "./pages/AccessRequest.jsx";
 import Signup from "./pages/Signup";
-import { Navigate } from "react-router-dom";
 import { auth } from "./firebase";
-import { Navigate, useLocation } from "react-router-dom";
+
 function RouteDebugger() {
   const location = useLocation();
 
