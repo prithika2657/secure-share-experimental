@@ -17,6 +17,7 @@ import AccessRequest from "./pages/AccessRequest.jsx";
 import Signup from "./pages/Signup";
 import { auth } from "./firebase";
 
+
 function RouteDebugger() {
   const location = useLocation();
 
@@ -56,7 +57,9 @@ export default function App() {
     <HashRouter>
     <RouteDebugger />
       <div className="flex">
-         {auth.currentUser && <Sidebar />}
+        {!window.location.hash.includes("/access/") && (
+  <Sidebar />
+)}
 
         <div className="flex-1">
           
