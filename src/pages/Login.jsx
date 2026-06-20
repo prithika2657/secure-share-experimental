@@ -3,7 +3,7 @@ import { auth } from "../firebase";
 import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
-
+import { useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] =
@@ -18,14 +18,16 @@ function Login() {
         email,
         password
       );
+      
   console.log("UID:", auth.currentUser.uid);
 console.log("EMAIL:", auth.currentUser.email);
       setMessage("Login successful ✅");
-      
+      navigate("/");
     } catch (error) {
       setMessage(error.message);
     }
   };
+  const navigate = useNavigate();
 
   return (
     <div className="p-6">

@@ -12,12 +12,28 @@ import AccessRequest from "./pages/AccessRequest.jsx";
 import Signup from "./pages/Signup";
 import { Navigate } from "react-router-dom";
 import { auth } from "./firebase";
+import { Navigate, useLocation } from "react-router-dom";
 function RouteDebugger() {
   const location = useLocation();
 
   console.log("PATH:", location.pathname);
 
   return null;
+}
+function ProtectedRoute({ children }) {
+  const location = useLocation();
+
+  if (!auth.currentUser) {
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location }}
+        replace
+      />
+    );
+  }
+
+  return children;
 }
 export default function App() {
    console.log("APP LOADED");
@@ -59,10 +75,10 @@ export default function App() {
   }
 />
 
-           <Route
+          <Route
   path="/upload"
   element={
-    auth.currentUser ? (
+    <ProtectedRoute>
       <Upload
         documents={documents}
         setDocuments={setDocuments}
@@ -71,25 +87,21 @@ export default function App() {
         logs={logs}
         setLogs={setLogs}
       />
-    ) : (
-      <Navigate to="/login" />
-    )
+    </ProtectedRoute>
   }
 />
 
             <Route
   path="/requests"
   element={
-    auth.currentUser ? (
+    <ProtectedRoute>
       <Requests
         requests={requests}
         setRequests={setRequests}
         logs={logs}
         setLogs={setLogs}
       />
-    ) : (
-      <Navigate to="/login" />
-    )
+    </ProtectedRoute>
   }
 />
             <Route
@@ -102,17 +114,16 @@ export default function App() {
                 logs={logs}
                 setLogs={setLogs}
     />
+
   }
 />
 
             <Route
   path="/logs"
   element={
-    auth.currentUser ? (
+    <ProtectedRoute>
       <AuditLogs logs={logs} />
-    ) : (
-      <Navigate to="/login" />
-    )
+    </ProtectedRoute>
   }
 />
           </Routes>
