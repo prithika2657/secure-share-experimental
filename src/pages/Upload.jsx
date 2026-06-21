@@ -60,7 +60,8 @@ const fileUrl = cloudinaryData.secure_url;
       ? Number(expiryHours)
       : null,
     fileUrl: fileUrl,
-
+  createdAt:
+    new Date().toISOString(),
   ownerId: auth.currentUser.uid,
   ownerEmail: auth.currentUser.email,
   };

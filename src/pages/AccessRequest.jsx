@@ -31,7 +31,27 @@ function AccessRequest({requests, setRequests, logs, setLogs }) {
  const found = docs.find(
   (d) => d.accessId === id
 );
+if (
+  found?.accessMode === "expiry"
+) {
+  const createdTime = new Date(
+    found.createdAt
+  );
 
+  const expiryTime = new Date(
+    createdTime.getTime() +
+    Number(found.expiryHours) *
+    60 *
+    60 *
+    1000
+  );
+
+  if (new Date() > expiryTime) {
+    setDoc(null);
+    setLoading(false);
+    return;
+  }
+}
 console.log("Found:", found);
 console.log("File URL:", found?.fileUrl);
 console.log("Access Mode:", found?.accessMode);
@@ -49,10 +69,32 @@ const approvedRequest =
   );
 
 setApproved(!!approvedRequest);
-    } catch (error) {
+    }
+     catch (error) {
       console.error(error);
     }
+if (
+  found?.accessMode === "viewOnce"
+) {
 
+  const viewSnapshot =
+    await getDocs(
+      collection(db, "viewLogs")
+    );
+
+  const alreadyViewed =
+  viewSnapshot.docs.find(
+    (v) =>
+      v.data().accessId ===
+        found.accessId &&
+      v.data().requester ===
+        requesterName
+  );
+
+  if (alreadyViewed) {
+    setViewed(true);
+  }
+}
     setLoading(false);
   };
 
@@ -63,6 +105,8 @@ setApproved(!!approvedRequest);
 
  const [sent, setSent] = useState(false);
  const [approved, setApproved] = useState(false);
+ const [viewed, setViewed] = useState(false);
+const [showViewer, setShowViewer] = useState(false);
  const [requesterName, setRequesterName] =
   useState("");
  const handleRequest = async() => {
@@ -102,6 +146,28 @@ console.log("REQUEST OBJECT:", newRequest);
 
     setSent(true);
   };
+  const handleViewDocument = async () => {
+
+  setShowViewer(true);
+
+  try {
+
+    await addDoc(
+  collection(db, "viewLogs"),
+  {
+    accessId: doc.accessId,
+    requester: requesterName,
+    viewedAt:
+      new Date().toISOString(),
+  }
+);
+
+    setViewed(true);
+
+  } catch (error) {
+    console.error(error);
+  }
+};
   if (loading) {
   return (
     <div className="p-6">
@@ -137,16 +203,68 @@ console.log("REQUEST OBJECT:", newRequest);
   className="border p-2 rounded w-full mt-4"
 />
 
-        {approved ? (
-  <a
-    href={doc.fileUrl}
-    target="_blank"
-    rel="noreferrer"
-    className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded"
-  >
-    Download Document
-  </a>
-) : !sent ? (
+   {approved ? (
+
+  doc.accessMode === "download" ? (
+
+    <a
+      href={doc.fileUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded"
+    >
+      Download Document
+    </a>
+
+  ) : doc.accessMode === "viewOnce" ? (
+
+    viewed ? (
+
+      <p className="text-red-600 mt-4">
+        This document has already been viewed.
+      </p>
+
+    ) : (
+
+      <>
+        {!showViewer ? (
+
+          <button
+            onClick={handleViewDocument}
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+          >
+            View Document
+          </button>
+
+        ) : (
+
+          <iframe
+            src={doc.fileUrl}
+            width="100%"
+            height="700"
+            title="Document Viewer"
+            className="mt-4 border rounded"
+          />
+
+        )}
+      </>
+
+    )
+
+  ) : doc.accessMode === "expiry" ? (
+
+    <a
+      href={doc.fileUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded"
+    >
+      Open Document
+    </a>
+
+  ) : null
+
+)    : !sent ? (
   <button
     onClick={handleRequest}
     className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
