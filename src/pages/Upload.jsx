@@ -146,7 +146,7 @@ try {
       Download After Approval
     </option>
 
-    <option value="viewOnly">
+    <option value="viewOnce">
       View Only
     </option>
 

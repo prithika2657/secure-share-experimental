@@ -192,6 +192,14 @@ console.log("REQUEST OBJECT:", newRequest);
 
         <p><b>Document:</b> {doc.name}</p>
         <p><b>File:</b> {doc.fileName}</p>
+        <p>
+  <b>Mode:</b> {doc.accessMode}
+</p>
+
+<p>
+  <b>Approved:</b>
+  {approved ? " YES" : " NO"}
+</p>
         <input
   type="text"
   placeholder="Enter Your Name"
@@ -201,7 +209,7 @@ console.log("REQUEST OBJECT:", newRequest);
   }
   className="border p-2 rounded w-full mt-4"
 />
-
+{console.log("MODE:", doc.accessMode)}
    {approved ? (
 
   doc.accessMode === "download" ? (
