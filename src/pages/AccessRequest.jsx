@@ -70,7 +70,7 @@ const approvedRequest =
 
 setApproved(!!approvedRequest);
 if (
-  found?.accessMode === "viewOnce"
+  found?.accessMode === "viewOnly"
 ) {
 
   const viewSnapshot =
@@ -161,8 +161,7 @@ console.log("REQUEST OBJECT:", newRequest);
   }
 );
 
-    setViewed(true);
-
+   
   } catch (error) {
     console.error(error);
   }
@@ -223,7 +222,7 @@ console.log("REQUEST OBJECT:", newRequest);
       Download Document
     </a>
 
-  ) : doc.accessMode === "viewOnce" ? (
+  ) : doc.accessMode === "viewOnly" ? (
 
     viewed ? (
 
