@@ -109,7 +109,7 @@ const [showViewer, setShowViewer] = useState(false);
  const [requesterName, setRequesterName] =
   useState("");
   const viewerUrl = doc
-  ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+  ? `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
       doc.fileUrl
     )}`
   : "";
