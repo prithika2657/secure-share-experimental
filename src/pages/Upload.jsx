@@ -111,9 +111,14 @@ try {
 };
   const latestDoc = documents[documents.length - 1];
   const handleCopyLink = () => {
+console.log(
+    "Copying:",
+    latestDoc?.accessLink
+  );
+  if (!latestDoc?.accessLink) return;
 
   navigator.clipboard.writeText(
-    accessLink
+    latestDoc.accessLink
   );
 
   setCopied(true);
