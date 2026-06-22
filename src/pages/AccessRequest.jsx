@@ -132,6 +132,15 @@ const [showViewer, setShowViewer] = useState(false);
 console.log("REQUEST OBJECT:", newRequest);
     try {
   await addDoc(collection(db, "requests"), newRequest);
+  await addDoc(
+  collection(db, "notifications"),
+  {
+    ownerId: doc.ownerId,
+    message:
+      `${requesterName} requested access to ${doc.name}`,
+    createdAt: Date.now(),
+  }
+);
   console.log("Request saved to Firestore");
 } catch (error) {
   console.error(error);

@@ -20,7 +20,9 @@ useEffect(() => {
       const data = snapshot.docs.map((doc) =>
         doc.data()
       );
-
+data.sort(
+  (a, b) => b.id - a.id
+);
       console.log("Firestore Requests:", data);
 
       setFirestoreRequests(data);
@@ -61,7 +63,9 @@ const refreshedRequests =
   refreshedSnapshot.docs.map((doc) =>
     doc.data()
   );
-
+refreshedRequests.sort(
+  (a, b) => b.id - a.id
+);
 setFirestoreRequests(refreshedRequests);
     console.log(
       "Firestore request updated!"

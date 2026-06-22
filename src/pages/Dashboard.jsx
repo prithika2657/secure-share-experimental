@@ -1,6 +1,44 @@
+import { useState, useEffect } from "react";
+import { db, auth } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
- function Dashboard({documents=[],requests=[]}) {
+function Dashboard({documents=[],requests=[]}) {
+  const [notifications, setNotifications] =
+  useState([]);
+
+const [showNotifications,
+  setShowNotifications] =
+  useState(false);
   console.log("Dashboard documents:", documents);
+  useEffect(() => {
+  const fetchNotifications = async () => {
+    try {
+      const snapshot = await getDocs(
+        collection(db, "notifications")
+      );
+
+      const data = snapshot.docs
+        .map((doc) => doc.data())
+        .filter(
+          (n) =>
+            n.ownerId ===
+            auth.currentUser?.uid
+        );
+
+      data.sort(
+        (a, b) =>
+          b.createdAt - a.createdAt
+      );
+
+      setNotifications(data);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchNotifications();
+}, []);
   const totalDocuments = documents.length;
 
   const pendingRequests =
@@ -16,14 +54,83 @@
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="bg-white p-6 rounded-xl shadow">
-        <h1 className="text-3xl font-bold text-blue-600">
-          SecureShare Dashboard
-        </h1>
+       <div className="flex justify-between items-center">
+
+  <h1 className="text-3xl font-bold text-blue-600">
+    SecureShare Dashboard
+  </h1>
+
+  <div
+    className="relative cursor-pointer text-3xl"
+    onClick={() =>
+      setShowNotifications(
+        !showNotifications
+      )
+    }
+  >
+    🔔
+
+    {notifications.length > 0 && (
+      <span
+        className="
+        absolute
+        -top-2
+        -right-2
+        bg-red-600
+        text-white
+        text-xs
+        rounded-full
+        px-2
+      "
+      >
+        {notifications.length}
+      </span>
+    )}
+  </div>
+
+</div>
 
         <p className="text-gray-600 mt-2">
           User-controlled secure document access system
         </p>
+{showNotifications && (
 
+  <div className="mt-4 bg-gray-50 border rounded p-4">
+
+    <h2 className="font-bold mb-2">
+      Notifications
+    </h2>
+
+    {notifications.length === 0 ? (
+
+      <p>
+        No notifications
+      </p>
+
+    ) : (
+
+      notifications.map(
+        (notification, index) => (
+
+          <div
+            key={index}
+            className="
+            border-b
+            py-2
+            text-sm
+            "
+          >
+            {notification.message}
+          </div>
+
+        )
+      )
+
+    )}
+
+  </div>
+
+)}
         <div className="mt-6 grid grid-cols-3 gap-4">
           <div className="bg-blue-50 p-4 rounded">
             Total Documents: {totalDocuments}
