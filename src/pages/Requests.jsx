@@ -3,7 +3,7 @@ import {
   collection,
   getDocs,
   updateDoc,
-  doc as firestoreDoc,
+  doc as firestoreDoc
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth } from "../firebase";
@@ -11,33 +11,28 @@ function Requests({ requests, setRequests, logs, setLogs }) {
   const [firestoreRequests, setFirestoreRequests] = useState([]);
 
 useEffect(() => {
-
-  const unsubscribe = onSnapshot(
-    collection(db, "notifications"),
-    (snapshot) => {
-
-      const data = snapshot.docs
-        .map((doc) => ({
-          firestoreId: doc.id,
-          ...doc.data(),
-        }))
-        .filter(
-          (n) =>
-            n.ownerId ===
-            auth.currentUser?.uid
-        );
-
-      data.sort(
-        (a, b) =>
-          b.createdAt - a.createdAt
+  const fetchRequests = async () => {
+    try {
+      const snapshot = await getDocs(
+        collection(db, "requests")
       );
 
-      setNotifications(data);
+      const data = snapshot.docs.map(
+        (doc) => doc.data()
+      );
+
+      data.sort(
+        (a, b) => b.id - a.id
+      );
+
+      setFirestoreRequests(data);
+
+    } catch (error) {
+      console.error(error);
     }
-  );
+  };
 
-  return () => unsubscribe();
-
+  fetchRequests();
 }, []);
   const updateStatus = async(id, newStatus) => {
     // Update requests and save to localStorage
