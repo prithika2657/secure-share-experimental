@@ -1,10 +1,46 @@
 import { useState, useEffect } from "react";
 import { db, auth } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot,updateDoc,doc as firestoreDoc} from "firebase/firestore";
 
 function Dashboard({documents=[],requests=[]}) {
   const [notifications, setNotifications] =
   useState([]);
+  const markAllAsRead = async () => {
+
+  try {
+
+    await Promise.all(
+
+      notifications.map(
+        async (notification) => {
+
+          if (
+            notification.read === false
+          ) {
+
+            await updateDoc(
+              firestoreDoc(
+                db,
+                "notifications",
+                notification.firestoreId
+              ),
+              {
+                read: true,
+              }
+            );
+
+          }
+
+        }
+      )
+
+    );
+
+  } catch (error) {
+    console.error(error);
+  }
+
+};
 
 const [showNotifications,
   setShowNotifications] =
@@ -62,15 +98,19 @@ const [showNotifications,
 
   <div
     className="relative cursor-pointer text-3xl"
-    onClick={() =>
+    onClick={() => {
       setShowNotifications(
         !showNotifications
-      )
-    }
+      );
+     markAllAsRead();
+    }}
   >
     🔔
 
-    {notifications.length > 0 && (
+    {
+notifications.filter(
+  (n) => !n.read
+).length > 0 && (
       <span
         className="
         absolute
@@ -83,7 +123,11 @@ const [showNotifications,
         px-2
       "
       >
-        {notifications.length}
+        {
+notifications.filter(
+  (n) => !n.read
+).length
+}
       </span>
     )}
   </div>

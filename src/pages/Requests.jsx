@@ -11,27 +11,33 @@ function Requests({ requests, setRequests, logs, setLogs }) {
   const [firestoreRequests, setFirestoreRequests] = useState([]);
 
 useEffect(() => {
-  const fetchRequests = async () => {
-    try {
-      const snapshot = await getDocs(
-        collection(db, "requests")
+
+  const unsubscribe = onSnapshot(
+    collection(db, "notifications"),
+    (snapshot) => {
+
+      const data = snapshot.docs
+        .map((doc) => ({
+          firestoreId: doc.id,
+          ...doc.data(),
+        }))
+        .filter(
+          (n) =>
+            n.ownerId ===
+            auth.currentUser?.uid
+        );
+
+      data.sort(
+        (a, b) =>
+          b.createdAt - a.createdAt
       );
 
-      const data = snapshot.docs.map((doc) =>
-        doc.data()
-      );
-data.sort(
-  (a, b) => b.id - a.id
-);
-      console.log("Firestore Requests:", data);
-
-      setFirestoreRequests(data);
-    } catch (error) {
-      console.error(error);
+      setNotifications(data);
     }
-  };
+  );
 
-  fetchRequests();
+  return () => unsubscribe();
+
 }, []);
   const updateStatus = async(id, newStatus) => {
     // Update requests and save to localStorage
